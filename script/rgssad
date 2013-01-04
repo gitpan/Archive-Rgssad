@@ -8,7 +8,7 @@ use File::Basename;
 use File::Path 'mkpath';
 use Getopt::Long;
 
-our $VERSION = '0.1.1';
+our $VERSION = '0.2.0';
 
 my $help = 0;
 my $list = 0;
@@ -139,7 +139,7 @@ To extract all entries from I<Game.rgss2a> to directory I<resources>, try
 
 To extract I<Data\Scripts.rvdata2> from I<Game.rgss3a> to current directory, try
 
-    rgssad Game.rgss3a 'Data\Scripts.rvdata2'
+    rgssad Game.rgss3a ./Data/Scripts.rvdata2
 
 =head1 SEE ALSO
 
