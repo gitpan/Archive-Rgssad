@@ -1,6 +1,6 @@
 package Archive::Rgssad;
 
-use 5.006;
+use 5.010;
 use strict;
 use warnings FATAL => 'all';
 
@@ -13,23 +13,34 @@ Archive::Rgssad - Provide an interface to rgssad and rgss2a archive files.
 
 =head1 VERSION
 
-Version 0.1
+Version 0.1.1
 
 =cut
 
-our $VERSION = '0.1';
+our $VERSION = '0.1.1';
 
 
 =head1 SYNOPSIS
 
     use Archive::Rgssad;
 
-    my $foo = Archive::Rgssad->new();
-    ...
+    my $rgssad = Archive::Rgssad->new('Game.rgssad');
+    for my $entry ($rgssad->entries) {
+      ...
+    }
 
 =head1 SUBROUTINES/METHODS
 
-=head2 new
+=head2 Constructor
+
+=over 4
+
+=item new([$io])
+
+Create an empty rgssad archive. If an additional argument is passed, call
+C<load> to load the entries from it.
+
+=back
 
 =cut
 
@@ -45,7 +56,14 @@ sub new {
   return $self;
 }
 
-=head2 load
+=head2 Load and Save
+
+=over 4
+
+=item load($io)
+
+Load entries from C<$io>, which should be either a readable instance of
+IO::Handle or its subclasses or a valid filepath.
 
 =cut
 
@@ -74,7 +92,8 @@ sub load {
     $len = unpack('V', $buf) ^ keygen($key);
 
     $fh->read($buf, $len);
-    $buf ^= pack('V*', keygen($_ = $key, ($len + 3) / 4));
+    $_ = $key;
+    $buf ^= pack('V*', keygen($_, ($len + 3) / 4));
     $entry->data(substr($buf, 0, $len));
 
     push @entries, $entry;
@@ -84,7 +103,12 @@ sub load {
   $fh->close;
 }
 
-=head2 save
+=item save($io)
+
+Save the entries to C<$io>, which should be either a writable instance of
+IO::Handle or its subclasses or a valid filepath.
+
+=back
 
 =cut
 
@@ -109,14 +133,21 @@ sub save {
     $len = length $entry->data;
     $fh->write(pack('V', $len ^ keygen($key)), 4);
 
-    $buf = $entry->data ^ pack('V*', keygen($_ = $key, ($len + 3) / 4));
+    $_ = $key;
+    $buf = $entry->data ^ pack('V*', keygen($_, ($len + 3) / 4));
     $fh->write($buf, $len);
   }
 
   $fh->close;
 }
 
-=head2 entries
+=head2 Manipulate Entries
+
+=over 4
+
+=item entries
+
+Return all entries.
 
 =cut
 
@@ -125,7 +156,10 @@ sub entries {
   return @{$self->{entries}};
 }
 
-=head2 get
+=item get($path)
+
+Return all entries with specified path. In scalar context, just return the
+first one.
 
 =cut
 
@@ -136,7 +170,11 @@ sub get {
   return wantarray ? @ret : $ret[0];
 }
 
-=head2 add
+=item add($path => $data, ...)
+
+=item add($entry, ...)
+
+Add new entries like $entry or Archive::Rgssad::Entry->new($path, $data).
 
 =cut
 
@@ -145,14 +183,21 @@ sub add {
   while (@_ > 0) {
     $_ = shift;
     if (ref eq 'Archive::Rgssad::Entry') {
-      push $self->{entries}, $_;
+      push @{$self->{entries}}, $_;
     } else {
-      push $self->{entries}, Archive::Rgssad::Entry->new($_, shift);
+      push @{$self->{entries}}, Archive::Rgssad::Entry->new($_, shift);
     }
   }
 }
 
-=head2 remove
+=item remove($path)
+
+=item remove($entry)
+
+If an entry is passed, remove the entries with the same path and data.
+Otherwise, remove all entries with specified path.
+
+=back
 
 =cut
 

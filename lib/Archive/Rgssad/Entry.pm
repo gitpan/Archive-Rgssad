@@ -1,17 +1,16 @@
 package Archive::Rgssad::Entry;
 
-use 5.006;
+use 5.010;
 use strict;
 use warnings FATAL => 'all';
 
 =head1 NAME
 
-Archive::Rgssad::Entry - The great new Archive::Rgssad::Entry!
+Archive::Rgssad::Entry - A (path, data) pair in rgssad archive.
 
 =cut
 
 our $VERSION = '0.1';
-
 
 =head1 SYNOPSIS
 

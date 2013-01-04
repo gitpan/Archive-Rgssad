@@ -16,6 +16,7 @@
    "prereqs" : {
       "build" : {
          "requires" : {
+            "IO::String" : "0",
             "Test::More" : "0"
          }
       },
@@ -30,18 +31,18 @@
             "File::Path" : "0",
             "Getopt::Long" : "0",
             "IO::File" : "0",
-            "perl" : "5.006"
+            "perl" : "5.01"
          }
       }
    },
    "provides" : {
       "Archive::Rgss3a" : {
          "file" : "lib/Archive/Rgss3a.pm",
-         "version" : "0.1"
+         "version" : "v0.1.1"
       },
       "Archive::Rgssad" : {
          "file" : "lib/Archive/Rgssad.pm",
-         "version" : "0.1"
+         "version" : "v0.1.1"
       },
       "Archive::Rgssad::Entry" : {
          "file" : "lib/Archive/Rgssad/Entry.pm",
@@ -58,5 +59,5 @@
          "http://dev.perl.org/licenses/"
       ]
    },
-   "version" : "0.1"
+   "version" : "v0.1.1"
 }
